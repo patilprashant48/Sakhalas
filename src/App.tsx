@@ -18,6 +18,7 @@ import { RoleGuard } from './auth/RoleGuard';
 // Layout
 import { Header } from './components/common/Header';
 import { Sidebar } from './components/common/Sidebar';
+import { MobileFooter } from './components/common/MobileFooter';
 
 // Pages - Lazy loaded for better performance
 const HomePublic = lazy(() => import('./pages/public/HomePublic').then(m => ({ default: m.HomePublic })));
@@ -63,7 +64,8 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: { xs: 2, sm: 3, md: 4 },
+          p: { xs: 1.5, sm: 3, md: 4 },
+          pb: { xs: 10, sm: 3, md: 4 }, // Extra bottom padding for mobile footer
           width: '100%',
           minHeight: '100vh',
           backgroundColor: 'background.default',
@@ -77,13 +79,14 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
           }),
         }}
       >
-        <Toolbar />
-        <Box sx={{ mt: { xs: 2, sm: 3 } }}>
+        <Toolbar sx={{ display: { xs: 'none', sm: 'block' } }} />
+        <Box sx={{ mt: { xs: 1, sm: 2, md: 3 } }}>
           <AnimatePresence mode="wait">
             <PageTransition>{children}</PageTransition>
           </AnimatePresence>
         </Box>
       </Box>
+      <MobileFooter />
     </Box>
   );
 };
