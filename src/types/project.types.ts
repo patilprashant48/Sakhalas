@@ -1,6 +1,7 @@
 export interface Project {
   id: string;
   name: string;
+  code?: string;
   description: string;
   budget: number;
   spent: number;
@@ -10,6 +11,7 @@ export interface Project {
   managerId: string;
   managerName: string;
   teamMembers: TeamMember[];
+  progress?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,4 +39,5 @@ export interface ProjectStats {
   budgetUtilization: number;
   pendingApprovals: number;
   upcomingPayments: number;
+  totalExpenses?: number;
 }

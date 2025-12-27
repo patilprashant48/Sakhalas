@@ -13,7 +13,7 @@ const MOCK_PROJECTS: Project[] = [
     spent: 32000,
     startDate: '2025-01-15',
     endDate: '2025-06-30',
-    manager: 'Sarah Johnson',
+    managerId: '1',
     managerName: 'Sarah Johnson',
     progress: 64,
     teamMembers: [
@@ -21,6 +21,8 @@ const MOCK_PROJECTS: Project[] = [
       { id: '2', name: 'Alex Kim', role: 'UI/UX Designer', email: 'alex.k@company.com' },
       { id: '3', name: 'Chris Lee', role: 'Frontend Developer', email: 'chris.l@company.com' },
     ],
+    createdAt: '2025-01-01T10:00:00Z',
+    updatedAt: '2025-01-15T10:00:00Z',
   },
   {
     id: '2',
@@ -32,7 +34,7 @@ const MOCK_PROJECTS: Project[] = [
     spent: 78000,
     startDate: '2025-02-01',
     endDate: '2025-08-31',
-    manager: 'Mike Chen',
+    managerId: '4',
     managerName: 'Mike Chen',
     progress: 65,
     teamMembers: [
@@ -41,6 +43,8 @@ const MOCK_PROJECTS: Project[] = [
       { id: '6', name: 'James Brown', role: 'Android Developer', email: 'james.b@company.com' },
       { id: '7', name: 'Lisa Taylor', role: 'QA Engineer', email: 'lisa.t@company.com' },
     ],
+    createdAt: '2025-02-01T10:00:00Z',
+    updatedAt: '2025-02-01T10:00:00Z',
   },
   {
     id: '3',
@@ -52,7 +56,7 @@ const MOCK_PROJECTS: Project[] = [
     spent: 52000,
     startDate: '2025-03-01',
     endDate: '2025-07-31',
-    manager: 'David Lee',
+    managerId: '8',
     managerName: 'David Lee',
     progress: 65,
     teamMembers: [
@@ -60,6 +64,8 @@ const MOCK_PROJECTS: Project[] = [
       { id: '9', name: 'Rachel Green', role: 'DevOps Engineer', email: 'rachel.g@company.com' },
       { id: '10', name: 'Tom Harris', role: 'Cloud Architect', email: 'tom.h@company.com' },
     ],
+    createdAt: '2025-03-01T10:00:00Z',
+    updatedAt: '2025-03-01T10:00:00Z',
   },
 ];
 
@@ -97,9 +103,19 @@ export const projectApi = {
       await new Promise(resolve => setTimeout(resolve, 300));
       return {
         id: String(MOCK_PROJECTS.length + 1),
-        ...data,
+        name: data.name,
+        description: data.description,
+        budget: data.budget,
         spent: 0,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        status: 'Active',
+        managerId: data.managerId,
+        managerName: 'Manager',
+        teamMembers: [],
         progress: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
     }
   },
@@ -134,11 +150,12 @@ export const projectApi = {
       console.log('Mock project stats (demo mode)');
       await new Promise(resolve => setTimeout(resolve, 300));
       return {
+        totalBudget: 50000,
+        totalSpent: 32000,
+        budgetUtilization: 64,
+        pendingApprovals: 5,
+        upcomingPayments: 8,
         totalExpenses: 32000,
-        pendingExpenses: 5,
-        approvedExpenses: 45,
-        completedMilestones: 8,
-        totalMilestones: 12,
       };
     }
   },

@@ -17,7 +17,7 @@ import { EXPENSE_CATEGORIES, REMINDER_FREQUENCIES, PAYMENT_METHODS } from '../..
 
 const expenseSchema = z.object({
   projectId: z.string().min(1, 'Project is required'),
-  category: z.enum(['Materials', 'Labor', 'Equipment', 'Services', 'Travel', 'Utilities', 'Other']),
+  category: z.enum(['Materials', 'Labor', 'Equipment', 'Services', 'Travel', 'Utilities', 'Infrastructure', 'Marketing', 'Other']),
   amount: z.number().min(0.01, 'Amount must be greater than 0'),
   vendor: z.string().min(2, 'Vendor name is required'),
   description: z.string().min(5, 'Description must be at least 5 characters'),

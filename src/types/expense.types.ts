@@ -7,6 +7,8 @@ export type ExpenseCategory =
   | 'Services' 
   | 'Travel' 
   | 'Utilities' 
+  | 'Infrastructure'
+  | 'Marketing'
   | 'Other';
 
 export type PaymentMethod = 

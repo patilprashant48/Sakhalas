@@ -6,6 +6,7 @@ export interface User {
   name: string;
   role: UserRole;
   requiresTwoFactor: boolean;
+  permissions?: string[];
 }
 
 export interface LoginRequest {
