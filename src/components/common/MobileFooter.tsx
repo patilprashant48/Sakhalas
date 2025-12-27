@@ -27,7 +27,7 @@ export const MobileFooter = () => {
     return '/dashboard';
   };
 
-  const handleNavigation = (event: React.SyntheticEvent, newValue: string) => {
+  const handleNavigation = (_event: React.SyntheticEvent, newValue: string) => {
     navigate(newValue);
   };
 
