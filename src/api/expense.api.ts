@@ -9,27 +9,30 @@ export const expenseApi = {
     startDate?: string;
     endDate?: string;
   }): Promise<Expense[]> => {
-    const response = await apiClient.get<{ success: boolean; data: Expense[] }>('/expenses', { params });
-    return response.data.data;
+    const response = await apiClient.get<{ success: boolean; data: any[] }>('/expenses', { params });
+    return response.data.data.map((e) => ({ ...e, id: e.id || e._id }));
   },
 
   getById: async (id: string): Promise<Expense> => {
-    const response = await apiClient.get<{ success: boolean; data: Expense }>(`/expenses/${id}`);
-    return response.data.data;
+    const response = await apiClient.get<{ success: boolean; data: any }>(`/expenses/${id}`);
+    const e = response.data.data;
+    return { ...e, id: e.id || e._id };
   },
 
   create: async (data: FormData): Promise<Expense> => {
-    const response = await apiClient.post<{ success: boolean; data: Expense }>('/expenses', data, {
+    const response = await apiClient.post<{ success: boolean; data: any }>('/expenses', data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    return response.data.data;
+    const e = response.data.data;
+    return { ...e, id: e.id || e._id };
   },
 
   update: async (id: string, data: FormData): Promise<Expense> => {
-    const response = await apiClient.put<{ success: boolean; data: Expense }>(`/expenses/${id}`, data, {
+    const response = await apiClient.put<{ success: boolean; data: any }>(`/expenses/${id}`, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    return response.data.data;
+    const e = response.data.data;
+    return { ...e, id: e.id || e._id };
   },
 
   delete: async (id: string): Promise<void> => {
@@ -56,7 +59,7 @@ export const expenseApi = {
   },
 
   getPendingApprovals: async (): Promise<Expense[]> => {
-    const response = await apiClient.get<{ success: boolean; data: Expense[] }>('/expenses/pending-approvals');
-    return response.data.data;
+    const response = await apiClient.get<{ success: boolean; data: any[] }>('/expenses/pending-approvals');
+    return response.data.data.map((e) => ({ ...e, id: e.id || e._id }));
   },
 };

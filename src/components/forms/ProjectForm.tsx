@@ -38,7 +38,7 @@ export const ProjectForm = ({ open, onClose, onSubmit, project, loading }: Proje
     formState: { errors },
     reset,
   } = useForm<ProjectFormData>({
-    // @ts-ignore - Zod schema type mismatch with react-hook-form
+    // @ts-expect-error - Zod schema type mismatch with react-hook-form
     resolver: zodResolver(projectSchema),
     defaultValues: project
       ? {
@@ -67,9 +67,15 @@ export const ProjectForm = ({ open, onClose, onSubmit, project, loading }: Proje
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog 
+      open={open} 
+      onClose={handleClose} 
+      maxWidth="md" 
+      fullWidth
+      container={() => document.body}
+    >
       <DialogTitle>{project ? 'Edit Project' : 'Create New Project'}</DialogTitle>
-      <form onSubmit={handleSubmit(onSubmit as any)}>
+      <form onSubmit={handleSubmit((data: ProjectFormData) => onSubmit(data))}>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>

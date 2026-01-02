@@ -15,17 +15,19 @@ export interface IPaymentProof {
 
 export interface IExpense extends Document {
   projectId: mongoose.Types.ObjectId;
-  category: 'Labor' | 'Materials' | 'Equipment' | 'Services' | 'Transportation' | 'Infrastructure' | 'Marketing' | 'Other';
+  category: 'Labor' | 'Materials' | 'Equipment' | 'Services' | 'Transportation' | 'Travel' | 'Utilities' | 'Infrastructure' | 'Marketing' | 'Other';
   amount: number;
   vendor: string;
   description: string;
   date: Date;
+  paymentFrequency?: 'One-time' | 'Weekly' | 'Monthly' | 'Quarterly' | 'Annually';
   status: 'Pending' | 'Approved' | 'Rejected' | 'Partially Paid' | 'Paid';
   submittedBy: mongoose.Types.ObjectId;
   submittedAt: Date;
   invoiceNumber?: string;
   billOfSupply?: string;
   attachments: string[];
+  quotations: string[];
   paidAmount: number;
   paymentProofs: IPaymentProof[];
   createdAt: Date;
@@ -69,7 +71,7 @@ const expenseSchema = new Schema<IExpense>(
     },
     category: {
       type: String,
-      enum: ['Labor', 'Materials', 'Equipment', 'Services', 'Transportation', 'Infrastructure', 'Marketing', 'Other'],
+      enum: ['Labor', 'Materials', 'Equipment', 'Services', 'Transportation', 'Travel', 'Utilities', 'Infrastructure', 'Marketing', 'Other'],
       required: [true, 'Category is required'],
     },
     amount: {
@@ -90,6 +92,10 @@ const expenseSchema = new Schema<IExpense>(
       type: Date,
       required: [true, 'Date is required'],
       default: Date.now,
+    },
+    paymentFrequency: {
+      type: String,
+      enum: ['One-time', 'Weekly', 'Monthly', 'Quarterly', 'Annually'],
     },
     status: {
       type: String,
@@ -114,6 +120,7 @@ const expenseSchema = new Schema<IExpense>(
       trim: true,
     },
     attachments: [String],
+    quotations: [String],
     paidAmount: {
       type: Number,
       default: 0,

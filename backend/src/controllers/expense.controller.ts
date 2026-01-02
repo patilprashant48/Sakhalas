@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import { Expense } from '../models/Expense.model';
+import mongoose from 'mongoose';
 import { Project } from '../models/Project.model';
 import { ApprovalHistory } from '../models/ApprovalHistory.model';
 import { createError } from '../middleware/errorHandler';
@@ -15,14 +16,15 @@ export const getAllExpenses = async (
   try {
     const { projectId, status, category, startDate, endDate } = req.query;
 
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (projectId) filter.projectId = projectId;
     if (status) filter.status = status;
     if (category) filter.category = category;
     if (startDate || endDate) {
-      filter.date = {};
-      if (startDate) filter.date.$gte = new Date(startDate as string);
-      if (endDate) filter.date.$lte = new Date(endDate as string);
+      const dateFilter: Record<string, Date> = {};
+      if (startDate) dateFilter.$gte = new Date(startDate as string);
+      if (endDate) dateFilter.$lte = new Date(endDate as string);
+      filter.date = dateFilter;
     }
 
     const expenses = await Expense.find(filter)
@@ -31,10 +33,10 @@ export const getAllExpenses = async (
       .sort({ date: -1 });
 
     // Add project name for frontend compatibility
-    const formattedExpenses = expenses.map((exp: any) => ({
+    const formattedExpenses = expenses.map((exp) => ({
       ...exp.toObject(),
-      projectName: exp.projectId?.name,
-      submittedByName: exp.submittedBy?.name,
+      projectName: (exp as unknown as { projectId?: { name?: string } }).projectId?.name,
+      submittedByName: (exp as unknown as { submittedBy?: { name?: string } }).submittedBy?.name,
     }));
 
     res.json({
@@ -48,7 +50,7 @@ export const getAllExpenses = async (
 
 // @desc    Get pending approvals
 export const getPendingApprovals = async (
-  req: AuthRequest,
+  _req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -58,10 +60,10 @@ export const getPendingApprovals = async (
       .populate('submittedBy', 'name email')
       .sort({ submittedAt: 1 });
 
-    const formattedExpenses = expenses.map((exp: any) => ({
+    const formattedExpenses = expenses.map((exp) => ({
       ...exp.toObject(),
-      projectName: exp.projectId?.name,
-      submittedByName: exp.submittedBy?.name,
+      projectName: (exp as unknown as { projectId?: { name?: string } }).projectId?.name,
+      submittedByName: (exp as unknown as { submittedBy?: { name?: string } }).submittedBy?.name,
     }));
 
     res.json({
@@ -89,11 +91,52 @@ export const getExpenseById = async (
       throw createError('Expense not found', 404);
     }
 
-    const formattedExpense = {
+    const formattedExpense: Record<string, unknown> = {
       ...expense.toObject(),
-      projectName: (expense as any).projectId?.name,
-      submittedByName: (expense as any).submittedBy?.name,
+      projectName: (expense as unknown as { projectId?: { name?: string } }).projectId?.name,
+      submittedByName: (expense as unknown as { submittedBy?: { name?: string } }).submittedBy?.name,
     };
+
+    // Normalize file paths to URLs for frontend
+    const { attachments = [], quotations = [], paymentProofs = [] } = expense as unknown as { attachments?: unknown[]; quotations?: unknown[]; paymentProofs?: unknown[] };
+    
+    // Add bill URLs (multiple bills)
+    if (attachments && Array.isArray(attachments) && attachments.length > 0) {
+      (formattedExpense as Record<string, unknown>).billUrls = attachments.map((a) => {
+        const billPath = a as unknown;
+        const billFilename = typeof billPath === 'string' ? billPath.split(/[\\/\\]/).pop() : null;
+        return billFilename ? `/uploads/${billFilename}` : null;
+      }).filter(Boolean);
+      // Keep legacy billUrl for backward compatibility (first bill)
+      const firstBillFilename = typeof attachments[0] === 'string' ? (attachments[0] as string).split(/[\\/\\]/).pop() : null;
+      if (firstBillFilename) {
+        (formattedExpense as Record<string, unknown>).billUrl = `/uploads/${firstBillFilename}`;
+      }
+    }
+
+    // Add quotation URLs
+    if (quotations && Array.isArray(quotations) && quotations.length > 0) {
+      (formattedExpense as Record<string, unknown>).quotationUrls = quotations.map((q) => {
+        const quotationPath = q as unknown;
+        const quotationFilename = typeof quotationPath === 'string' ? quotationPath.split(/[\\/\\]/).pop() : null;
+        return quotationFilename ? `/uploads/${quotationFilename}` : null;
+      }).filter(Boolean);
+    }
+
+    if (paymentProofs && Array.isArray(paymentProofs) && paymentProofs.length > 0) {
+      (formattedExpense as Record<string, unknown>).paymentProofs = (paymentProofs as unknown[]).map((p) => {
+        const pObj = p as unknown as { attachments?: unknown[]; _id?: unknown; paidBy?: unknown };
+        const proofAttachments = pObj.attachments || [];
+        const proofFilename = proofAttachments.length > 0 ? (typeof proofAttachments[0] === 'string' ? (proofAttachments[0] as string).split(/[\\/\\]/).pop() : null) : null;
+        const paidByVal = pObj.paidBy && typeof pObj.paidBy === 'object' ? (pObj.paidBy as Record<string, unknown>)['_id'] || pObj.paidBy : pObj.paidBy;
+        return {
+          ...(p as Record<string, unknown>),
+          id: pObj._id,
+          paidBy: paidByVal,
+          proofUrl: proofFilename ? `/uploads/${proofFilename}` : undefined,
+        };
+      });
+    }
 
     res.json({
       success: true,
@@ -106,7 +149,7 @@ export const getExpenseById = async (
 
 // @desc    Get approval history
 export const getApprovalHistory = async (
-  _req: AuthRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -115,14 +158,18 @@ export const getApprovalHistory = async (
       .populate('performedBy', 'name email')
       .sort({ performedAt: 1 });
 
-    const formattedHistory = history.map((item: any) => ({
-      id: item._id,
-      action: item.action,
-      performedBy: item.performedBy?._id,
-      performedByName: item.performedBy?.name,
-      performedAt: item.performedAt,
-      comment: item.comment,
-    }));
+    const formattedHistory = history.map((item) => {
+      const it = item as unknown as { _id?: unknown; action?: string; performedBy?: unknown; performedAt?: Date; comment?: string };
+      const performedById = it.performedBy && typeof it.performedBy === 'object' ? (it.performedBy as Record<string, unknown>)['_id'] : it.performedBy;
+      return {
+        id: it._id,
+        action: it.action,
+        performedBy: performedById,
+        performedByName: (it.performedBy as Record<string, unknown>)?.name,
+        performedAt: it.performedAt,
+        comment: it.comment,
+      };
+    });
 
     res.json({
       success: true,
@@ -145,13 +192,22 @@ export const createExpense = async (
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const files = req.files as Express.Multer.File[];
-    const attachments = files ? files.map((file) => file.path) : [];
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[];
+    let attachments: string[] = [];
+    let quotations: string[] = [];
+
+    if (Array.isArray(files)) {
+      attachments = files.map((file) => file.path);
+    } else if (files) {
+      attachments = files['attachments'] ? files['attachments'].map((file) => file.path) : [];
+      quotations = files['quotations'] ? files['quotations'].map((file) => file.path) : [];
+    }
 
     const expense = await Expense.create({
       ...req.body,
       submittedBy: req.user!.id,
       attachments,
+      quotations,
     });
 
     // Create approval history entry
@@ -330,7 +386,7 @@ export const addPayment = async (
     expense.paymentProofs.push({
       amount: paymentAmount,
       paidAt: new Date(),
-      paidBy: req.user!.id as any,
+      paidBy: new mongoose.Types.ObjectId(req.user!.id),
       method,
       transactionRef,
       chequeNumber,

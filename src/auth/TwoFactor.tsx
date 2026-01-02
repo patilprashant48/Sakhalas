@@ -28,8 +28,9 @@ export const TwoFactor = () => {
     try {
       await verifyTwoFactor(otp);
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
+    } catch (_err) {
+      const e = _err as unknown as { response?: { data?: { message?: string } } };
+      setError(e?.response?.data?.message || 'Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }

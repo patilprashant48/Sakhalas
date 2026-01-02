@@ -42,7 +42,7 @@ export const ProjectDetails = () => {
     try {
       const data = await projectApi.getById(projectId);
       setProject(data);
-    } catch (err) {
+    } catch {
       setError('Failed to load project details');
     } finally {
       setLoading(false);

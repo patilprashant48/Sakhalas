@@ -30,7 +30,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import PaymentIcon from '@mui/icons-material/Payment';
 import { expenseApi } from '../../api/expense.api';
+import { splitApi } from '../../api/split.api';
 import type { Expense, ApprovalHistoryItem, PaymentFormData } from '../../types/expense.types';
+import type { ExpenseSplit } from '../../types/split.types';
 import { PaymentForm } from '../../components/forms/PaymentForm';
 import { usePermissions } from '../../hooks/usePermissions';
 import { formatCurrency, formatDate, formatDateTime } from '../../utils/formatters';
@@ -40,6 +42,7 @@ export const ExpenseDetails = () => {
   const navigate = useNavigate();
   const permissions = usePermissions();
   const [expense, setExpense] = useState<Expense | null>(null);
+  const [split, setSplit] = useState<ExpenseSplit | null>(null);
   const [history, setHistory] = useState<ApprovalHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +57,7 @@ export const ExpenseDetails = () => {
     if (expenseId) {
       fetchExpense();
       fetchHistory();
+      fetchSplit();
     }
   }, [expenseId, navigate]);
 
@@ -63,7 +67,7 @@ export const ExpenseDetails = () => {
     try {
       const data = await expenseApi.getById(expenseId);
       setExpense(data);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load expense details');
     } finally {
       setLoading(false);
@@ -76,8 +80,21 @@ export const ExpenseDetails = () => {
     try {
       const data = await expenseApi.getApprovalHistory(expenseId);
       setHistory(data);
+    } catch (_err) {
+      console.error('Failed to load history', _err);
+    }
+  };
+
+  const fetchSplit = async () => {
+    if (!expenseId) return;
+
+    try {
+      const data = await splitApi.getByExpenseId(expenseId);
+      console.log('Split data loaded:', data);
+      setSplit(data);
     } catch (err) {
-      console.error('Failed to load history', err);
+      // Split may not exist for this expense, which is fine
+      console.log('No split found for this expense', err);
     }
   };
 
@@ -95,8 +112,8 @@ export const ExpenseDetails = () => {
       setPaymentFormOpen(false);
       fetchExpense();
       fetchHistory();
-    } catch (err) {
-      console.error('Failed to add payment', err);
+    } catch (_err) {
+      console.error('Failed to add payment', _err);
     }
   };
 
@@ -173,15 +190,101 @@ export const ExpenseDetails = () => {
                 <Typography variant="body1">{expense.description}</Typography>
               </Grid>
 
-              {expense.billUrl && (
+              {expense.billUrls && expense.billUrls.length > 0 && (
                 <Grid item xs={12}>
-                  <Button startIcon={<AttachFileIcon />} variant="outlined" size="small">
-                    View Bill
-                  </Button>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Bills
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {expense.billUrls.map((url, index) => (
+                      <Button
+                        key={url}
+                        startIcon={<AttachFileIcon />}
+                        variant="outlined"
+                        size="small"
+                        onClick={() => window.open(url, '_blank')}
+                      >
+                        Bill {index + 1}
+                      </Button>
+                    ))}
+                  </Box>
+                </Grid>
+              )}
+
+              {expense.quotationUrls && expense.quotationUrls.length > 0 && (
+                <Grid item xs={12}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Quotations
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {expense.quotationUrls.map((url, index) => (
+                      <Button
+                        key={url}
+                        startIcon={<AttachFileIcon />}
+                        variant="outlined"
+                        size="small"
+                        onClick={() => window.open(url, '_blank')}
+                      >
+                        Quotation {index + 1}
+                      </Button>
+                    ))}
+                  </Box>
                 </Grid>
               )}
             </Grid>
           </Paper>
+
+          {/* Split Information */}
+          {split && (
+            <Paper sx={{ p: 3, mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Expense Split
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Paid By
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {split.paidByName || split.paidBy}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2" color="text.secondary">
+                    Split Type
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {split.splitType.charAt(0).toUpperCase() + split.splitType.slice(1)}
+                  </Typography>
+                </Grid>
+                {split.groupName && (
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Group
+                    </Typography>
+                    <Typography variant="body1" fontWeight="bold">
+                      {split.groupName}
+                    </Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Participants
+                  </Typography>
+                  <List dense>
+                    {split.participants.map((participant) => (
+                      <ListItem key={participant.userId}>
+                        <ListItemText
+                          primary={participant.userName || participant.userId}
+                          secondary={`${formatCurrency(participant.amount || 0)} ${participant.paid ? '✓ Paid' : '- Pending'}`}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Grid>
+              </Grid>
+            </Paper>
+          )}
 
           {/* Payment History */}
           {expense.paymentProofs && expense.paymentProofs.length > 0 && (
@@ -197,7 +300,11 @@ export const ExpenseDetails = () => {
                       secondary={`Paid on ${formatDate(payment.paidAt)} by ${payment.paidBy}`}
                     />
                     {payment.proofUrl && (
-                      <Button size="small" startIcon={<AttachFileIcon />}>
+                      <Button
+                        size="small"
+                        startIcon={<AttachFileIcon />}
+                        onClick={() => window.open(payment.proofUrl, '_blank')}
+                      >
                         View Proof
                       </Button>
                     )}
@@ -297,13 +404,15 @@ export const ExpenseDetails = () => {
         </Grid>
       </Grid>
 
-      <PaymentForm
-        open={paymentFormOpen}
-        onClose={() => setPaymentFormOpen(false)}
-        onSubmit={handlePaymentSubmit}
-        expenseAmount={expense.amount}
-        paidAmount={expense.paidAmount}
-      />
+      {paymentFormOpen && (
+        <PaymentForm
+          open={paymentFormOpen}
+          onClose={() => setPaymentFormOpen(false)}
+          onSubmit={handlePaymentSubmit}
+          expenseAmount={expense.amount}
+          paidAmount={expense.paidAmount}
+        />
+      )}
     </Container>
   );
 };

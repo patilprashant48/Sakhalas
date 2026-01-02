@@ -27,7 +27,26 @@ export const Header = ({ onMenuClick, onDesktopToggle, desktopOpen }: HeaderProp
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    // Log anchor info for debugging intermittent errors where Popper cannot access documentElement
+    try {
+      const target = event.currentTarget;
+      const isElement = target && typeof (target as HTMLElement).nodeName === 'string' && (target as HTMLElement).ownerDocument;
+      console.debug('Account menu click anchor:', {
+        nodeName: isElement ? (target as HTMLElement).nodeName : undefined,
+        hasOwnerDocument: isElement ? Boolean((target as HTMLElement).ownerDocument) : false,
+        ownerDocumentHasElement: isElement ? Boolean((target as HTMLElement).ownerDocument?.documentElement) : false,
+      });
+      if (isElement) {
+        setAnchorEl(target as HTMLElement);
+      } else if (typeof document !== 'undefined' && document.body) {
+        setAnchorEl(document.body);
+      } else {
+        setAnchorEl(null);
+      }
+    } catch (_err) {
+      console.error('Failed to set anchor element for account menu', _err);
+      if (typeof document !== 'undefined' && document.body) setAnchorEl(document.body);
+    }
   };
 
   const handleClose = () => {
@@ -155,6 +174,17 @@ export const Header = ({ onMenuClick, onDesktopToggle, desktopOpen }: HeaderProp
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleClose}
+              // Ensure Menu mounts into a valid document body (guard against missing ownerDocument)
+              container={(() => {
+                try {
+                  if (typeof document === 'undefined') return undefined;
+                  if (anchorEl && anchorEl.ownerDocument && anchorEl.ownerDocument.body) return anchorEl.ownerDocument.body;
+                  return document.body;
+                } catch {
+                  // defensive fallback if ownerDocument or documentElement access throws
+                  return typeof document !== 'undefined' ? document.body : undefined;
+                }
+              })()}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',

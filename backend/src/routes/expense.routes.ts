@@ -38,7 +38,7 @@ router.get('/:id/history', expenseController.getApprovalHistory);
 // @access  Private
 router.post(
   '/',
-  upload.array('attachments', 5),
+  upload.fields([{ name: 'attachments', maxCount: 10 }, { name: 'quotations', maxCount: 10 }]),
   [
     body('projectId').notEmpty().withMessage('Project is required'),
     body('category').notEmpty().withMessage('Category is required'),

@@ -22,6 +22,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { projectApi } from '../../api/project.api';
+import { useSnackbar } from 'notistack';
 import type { Project, ProjectFormData } from '../../types/project.types';
 import { ProjectForm } from '../../components/forms/ProjectForm';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
@@ -36,10 +37,12 @@ export const ProjectList = () => {
   const [error, setError] = useState<string | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | undefined>();
+  const [formLoading, setFormLoading] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; projectId: string | null }>({
     open: false,
     projectId: null,
   });
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     fetchProjects();
@@ -49,7 +52,7 @@ export const ProjectList = () => {
     try {
       const data = await projectApi.getAll();
       setProjects(data);
-    } catch (err) {
+    } catch {
       setError('Failed to load projects');
     } finally {
       setLoading(false);
@@ -67,16 +70,24 @@ export const ProjectList = () => {
   };
 
   const handleFormSubmit = async (data: ProjectFormData) => {
+    setFormLoading(true);
     try {
       if (selectedProject) {
         await projectApi.update(selectedProject.id, data);
+        enqueueSnackbar('Project updated successfully', { variant: 'success' });
       } else {
         await projectApi.create(data);
+        enqueueSnackbar('Project created successfully', { variant: 'success' });
       }
       setFormOpen(false);
       fetchProjects();
     } catch (err) {
-      console.error('Failed to save project', err);
+      const e = err as unknown as { response?: { data?: { message?: string } } };
+      console.error('Failed to save project', e);
+      const message = e?.response?.data?.message || 'Failed to save project';
+      enqueueSnackbar(message, { variant: 'error' });
+    } finally {
+      setFormLoading(false);
     }
   };
 
@@ -196,12 +207,15 @@ export const ProjectList = () => {
         </Table>
       </TableContainer>
 
-      <ProjectForm
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
-        onSubmit={handleFormSubmit}
-        project={selectedProject}
-      />
+      {formOpen && (
+        <ProjectForm
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          onSubmit={handleFormSubmit}
+          project={selectedProject}
+          loading={formLoading}
+        />
+      )}
 
       <ConfirmDialog
         open={confirmDialog.open}

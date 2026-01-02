@@ -11,10 +11,8 @@ import {
   InputAdornment,
   IconButton,
   Stack,
-  Divider,
   Paper,
   alpha,
-  Grid,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
@@ -26,11 +24,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LoginIcon from '@mui/icons-material/Login';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import WorkIcon from '@mui/icons-material/Work';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import AssessmentIcon from '@mui/icons-material/Assessment';
+// Removed demo role icons to disable demo mode
 import { useSnackbar } from 'notistack';
 import { useAuth } from '../hooks/useAuth';
 import type { UserRole } from '../types/auth.types';
@@ -45,45 +39,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-interface RoleOption {
-  role: UserRole;
-  email: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
-const ROLE_OPTIONS: RoleOption[] = [
-  {
-    role: 'Admin',
-    email: 'admin@company.com',
-    icon: <AdminPanelSettingsIcon />,
-    color: '#f44336',
-  },
-  {
-    role: 'Project Manager',
-    email: 'manager@company.com',
-    icon: <ManageAccountsIcon />,
-    color: '#2196f3',
-  },
-  {
-    role: 'Treasurer',
-    email: 'treasurer@company.com',
-    icon: <AccountBalanceIcon />,
-    color: '#4caf50',
-  },
-  {
-    role: 'Employee',
-    email: 'employee@company.com',
-    icon: <WorkIcon />,
-    color: '#ff9800',
-  },
-  {
-    role: 'Auditor',
-    email: 'auditor@company.com',
-    icon: <AssessmentIcon />,
-    color: '#9c27b0',
-  },
-];
+// Demo role selection removed — use real credentials
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -96,7 +52,6 @@ export const Login = () => {
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -106,11 +61,7 @@ export const Login = () => {
     },
   });
 
-  const handleRoleSelect = (role: RoleOption) => {
-    setValue('email', role.email);
-    setValue('password', 'password123');
-    enqueueSnackbar(`Selected ${role.role} role`, { variant: 'info' });
-  };
+  // Demo handlers removed. Login uses real credentials.
 
   const getRoleBasedRedirect = (role: UserRole): string => {
     switch (role) {
@@ -271,52 +222,7 @@ export const Login = () => {
               Sign in to continue to your dashboard
             </Typography>
 
-            {/* Quick Role Selection */}
-            <Box sx={{ mb: { xs: 3, sm: 4 } }}>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom sx={{ mb: 1.5 }}>
-                Quick Access (Demo Mode)
-              </Typography>
-              <Grid container spacing={{ xs: 1.5, sm: 2 }}>
-                {ROLE_OPTIONS.map((roleOpt) => (
-                  <Grid item xs={6} sm={4} key={roleOpt.role}>
-                    <MotionBox
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Card
-                        onClick={() => handleRoleSelect(roleOpt)}
-                        sx={{
-                          cursor: 'pointer',
-                          border: 2,
-                          borderColor: 'transparent',
-                          transition: 'all 0.3s',
-                          '&:hover': {
-                            borderColor: roleOpt.color,
-                            bgcolor: alpha(roleOpt.color, 0.05),
-                          },
-                        }}
-                      >
-                        <CardContent sx={{ p: 1.5, textAlign: 'center' }}>
-                          <Box
-                            sx={{
-                              color: roleOpt.color,
-                              mb: 0.5,
-                              '& svg': { fontSize: 28 },
-                            }}
-                          >
-                            {roleOpt.icon}
-                          </Box>
-                          <Typography variant="caption" fontWeight={600}>
-                            {roleOpt.role}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </MotionBox>
-                  </Grid>
-                ))}
-              </Grid>
-              <Divider sx={{ my: 3 }} />
-            </Box>
+            {/* Demo role selection removed — form uses real credentials */}
 
             {error && (
               <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
@@ -409,20 +315,7 @@ export const Login = () => {
               </Stack>
             </form>
 
-            <Divider sx={{ my: 3 }}>
-              <Typography variant="caption" color="text.secondary">
-                Demo Credentials
-              </Typography>
-            </Divider>
-
-            <Box sx={{ bgcolor: 'action.hover', p: 2, borderRadius: 2 }}>
-              <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                <strong>Admin:</strong> admin@company.com / password123
-              </Typography>
-              <Typography variant="caption" color="text.secondary" display="block">
-                <strong>Manager:</strong> manager@company.com / password123
-              </Typography>
-            </Box>
+            {/* Removed demo credentials section */}
           </CardContent>
         </MotionCard>
 

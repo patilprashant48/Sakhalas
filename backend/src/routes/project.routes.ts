@@ -31,7 +31,6 @@ router.post(
   authorize('Admin', 'Project Manager'),
   [
     body('name').trim().notEmpty().withMessage('Project name is required'),
-    body('code').trim().notEmpty().withMessage('Project code is required'),
     body('description').trim().notEmpty().withMessage('Description is required'),
     body('managerId').notEmpty().withMessage('Manager is required'),
     body('budget').isNumeric().withMessage('Budget must be a number'),

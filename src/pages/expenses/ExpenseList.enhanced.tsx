@@ -22,6 +22,7 @@ import { useSnackbar } from 'notistack';
 import type { Expense, ExpenseFormData } from '../../types/expense.types';
 import { expenseApi } from '../../api/expense.api';
 import { projectApi } from '../../api/project.api';
+import { splitApi } from '../../api/split.api';
 import { formatCurrency } from '../../utils/formatters';
 import { usePermissions } from '../../hooks/usePermissions';
 import { ExpenseForm } from '../../components/forms/ExpenseForm';
@@ -46,7 +47,7 @@ export const ExpenseList = () => {
       setLoading(true);
       const data = await expenseApi.getAll();
       setExpenses(data);
-    } catch (error) {
+    } catch {
       enqueueSnackbar('Failed to load expenses', { variant: 'error' });
     } finally {
       setLoading(false);
@@ -62,8 +63,15 @@ export const ExpenseList = () => {
     }
   };
 
-  const handleFormSubmit = async (data: ExpenseFormData, billFile?: File) => {
+  const handleFormSubmit = async (
+    data: ExpenseFormData, 
+    billFile?: File, 
+    quotationFile?: File, 
+    splitConfig?: { paidBy: string; splitType: string; participants: any[]; groupId: string }
+  ) => {
     try {
+      console.log('handleFormSubmit called with:', { data, splitConfig });
+      
       const formData = new FormData();
       formData.append('projectId', data.projectId);
       formData.append('category', data.category);
@@ -72,14 +80,40 @@ export const ExpenseList = () => {
       formData.append('description', data.description);
       formData.append('date', data.date);
       formData.append('status', data.status);
-      if (billFile) formData.append('billFile', billFile);
+      if (data.paymentFrequency) formData.append('paymentFrequency', data.paymentFrequency);
+      // append files under 'attachments' so backend multer handles them
+      if (billFile) formData.append('attachments', billFile);
+      if (quotationFile) formData.append('attachments', quotationFile);
 
-      await expenseApi.create(formData);
+      const createdExpense = await expenseApi.create(formData);
+      
+      console.log('Expense created:', createdExpense);
+      console.log('Checking split creation:', { splitConfig, hasId: !!createdExpense.id, hasParticipants: splitConfig?.participants?.length });
+      
+      // Create split if configured
+      if (splitConfig && createdExpense.id && splitConfig.participants.length > 0) {
+        console.log('Creating split with config:', splitConfig);
+        await splitApi.create({
+          expenseId: createdExpense.id,
+          participants: splitConfig.participants,
+          splitType: splitConfig.splitType,
+          groupId: splitConfig.groupId,
+          totalAmount: data.amount,
+          paidBy: splitConfig.paidBy || undefined,
+        });
+        console.log('Split created successfully');
+      }
+      
       setFormOpen(false);
       fetchExpenses();
       enqueueSnackbar('Expense created successfully', { variant: 'success' });
     } catch (error) {
-      enqueueSnackbar('Failed to create expense', { variant: 'error' });
+      // Surface backend error message if available
+      const err = error as unknown as { response?: { data?: { error?: { message?: string } } } ; message?: string };
+      const respData = (err as unknown as { response?: { data?: unknown } }).response?.data;
+      const msg = respData && typeof respData === 'object' ? JSON.stringify(respData) : (respData as string | undefined) || (err as { message?: string })?.message || 'Failed to create expense';
+      console.error('Create expense error:', err);
+      enqueueSnackbar(String(msg), { variant: 'error' });
     }
   };
 
@@ -310,12 +344,14 @@ export const ExpenseList = () => {
         />
       </Card>
 
-      <ExpenseForm
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
-        onSubmit={handleFormSubmit}
-        projects={projects}
-      />
+      {formOpen && (
+        <ExpenseForm
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          onSubmit={handleFormSubmit}
+          projects={projects}
+        />
+      )}
     </Box>
   );
 };

@@ -29,6 +29,8 @@ export interface Expense {
   date: string;
   status: ExpenseStatus;
   billUrl?: string;
+  billUrls?: string[];
+  quotationUrls?: string[];
   submittedBy: string;
   submittedByName: string;
   submittedAt: string;
@@ -38,6 +40,7 @@ export interface Expense {
   rejectionReason?: string;
   reminderDate?: string;
   reminderFrequency?: 'Daily' | 'Weekly' | 'Monthly';
+  paymentFrequency?: 'One-time' | 'Weekly' | 'Monthly' | 'Quarterly' | 'Annually';
   dueDate?: string;
   paymentMethod?: PaymentMethod;
   // Card payment details (masked)
@@ -75,6 +78,7 @@ export interface ExpenseFormData {
   billFile?: File;
   reminderDate?: string;
   reminderFrequency?: 'Daily' | 'Weekly' | 'Monthly';
+  paymentFrequency?: 'One-time' | 'Weekly' | 'Monthly' | 'Quarterly' | 'Annually';
   dueDate?: string;
   paymentMethod?: PaymentMethod;
   // Card payment details (masked)

@@ -31,6 +31,8 @@ const ExpenseDetails = lazy(() => import('./pages/expenses/ExpenseDetails').then
 const Approvals = lazy(() => import('./pages/expenses/Approvals').then(m => ({ default: m.Approvals })));
 const PaymentManagement = lazy(() => import('./pages/payments/PaymentManagement').then(m => ({ default: m.PaymentManagement })));
 const Reports = lazy(() => import('./pages/reports/Reports').then(m => ({ default: m.Reports })));
+const BalancesDashboard = lazy(() => import('./pages/splits/BalancesDashboard').then(m => ({ default: m.BalancesDashboard })));
+const GroupList = lazy(() => import('./pages/groups/GroupList').then(m => ({ default: m.GroupList })));
 
 // Page transition wrapper
 const PageTransition = ({ children }: { children: ReactNode }) => (
@@ -210,6 +212,28 @@ function App() {
                 <AuthGuard>
                   <MainLayout>
                     <Reports />
+                  </MainLayout>
+                </AuthGuard>
+              }
+            />
+
+            <Route
+              path="/balances"
+              element={
+                <AuthGuard>
+                  <MainLayout>
+                    <BalancesDashboard />
+                  </MainLayout>
+                </AuthGuard>
+              }
+            />
+
+            <Route
+              path="/groups"
+              element={
+                <AuthGuard>
+                  <MainLayout>
+                    <GroupList />
                   </MainLayout>
                 </AuthGuard>
               }

@@ -50,8 +50,10 @@ const MotionCard = motion.create(Card);
 const MotionBox = motion.create(Box);
 
 // Custom tooltip for better data visualization
-const CustomTooltip = ({ active, payload }: any) => {
+type TooltipPayloadItem = { name?: string; value?: number };
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) => {
   if (active && payload && payload.length) {
+    const item = payload[0];
     return (
       <Box
         sx={{
@@ -64,10 +66,10 @@ const CustomTooltip = ({ active, payload }: any) => {
         }}
       >
         <Typography variant="body2" fontWeight={600}>
-          {payload[0].name}
+          {item.name}
         </Typography>
         <Typography variant="body2" color="primary">
-          {formatCurrency(payload[0].value as number)}
+          {formatCurrency(item.value || 0)}
         </Typography>
       </Box>
     );
@@ -130,6 +132,7 @@ export const CompanyDashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
+   
   useEffect(() => {
     setMounted(true);
     fetchDashboardData();
@@ -156,7 +159,7 @@ export const CompanyDashboard = () => {
           variant: 'warning',
         });
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load dashboard data');
       enqueueSnackbar('Failed to load dashboard data', { variant: 'error' });
     } finally {
@@ -323,11 +326,11 @@ export const CompanyDashboard = () => {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={expensesByCategory as any}
+                        data={expensesByCategory}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={(entry: any) => `${entry.category}: ${formatPercentage(entry.percentage)}`}
+                        label={(entry: ExpensesByCategory) => `${entry.category}: ${formatPercentage(entry.percentage)}`}
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="amount"

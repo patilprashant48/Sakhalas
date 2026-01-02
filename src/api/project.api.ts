@@ -3,8 +3,12 @@ import type { Project, ProjectFormData, ProjectStats } from '../types/project.ty
 
 export const projectApi = {
   getAll: async (): Promise<Project[]> => {
-    const response = await apiClient.get<{ success: boolean; data: Project[] }>('/projects');
-    return response.data.data;
+    const response = await apiClient.get<{ success: boolean; data: any[] }>('/projects');
+    // Normalize backend _id -> id for frontend types
+    return response.data.data.map((p) => ({
+      ...p,
+      id: p.id || p._id,
+    }));
   },
 
   getById: async (id: string): Promise<Project> => {

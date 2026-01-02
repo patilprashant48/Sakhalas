@@ -60,7 +60,7 @@ export const ProjectDashboard = () => {
     try {
       const dashboardData = await dashboardApi.getProjectDashboard(projectId);
       setData(dashboardData);
-    } catch (err) {
+    } catch {
       setError('Failed to load project dashboard');
     } finally {
       setLoading(false);

@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import { Project } from '../models/Project.model';
+import mongoose from 'mongoose';
 import { Expense } from '../models/Expense.model';
 import { createError } from '../middleware/errorHandler';
 import { AuthRequest } from '../middleware/auth';
@@ -14,7 +15,7 @@ export const getAllProjects = async (
   try {
     const { status, managerId, search } = req.query;
 
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (status) filter.status = status;
     if (managerId) filter.managerId = managerId;
     if (search) {
@@ -111,8 +112,17 @@ export const createProject = async (
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Validate managerId: use provided if valid ObjectId, otherwise default to requester
+    const managerId = mongoose.isValidObjectId(req.body.managerId) ? req.body.managerId : req.user!.id;
+
     const project = await Project.create({
       ...req.body,
+      // Ensure required fields exist; generate sensible defaults when frontend omits them
+      code:
+        req.body.code ||
+        `${(req.body.name || 'PRJ').toString().replace(/\s+/g, '').slice(0, 6).toUpperCase()}-${Date.now().toString().slice(-4)}`,
+      category: req.body.category || 'General',
+      managerId,
       createdBy: req.user!.id,
     });
 
@@ -134,9 +144,14 @@ export const updateProject = async (
   next: NextFunction
 ) => {
   try {
+    const updateData: Record<string, unknown> = { ...req.body };
+    if (updateData.managerId && !mongoose.isValidObjectId(updateData.managerId as string)) {
+      delete updateData.managerId;
+    }
+
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     ).populate('managerId', 'name email');
 

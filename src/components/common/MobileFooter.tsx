@@ -5,6 +5,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useAuth } from '../../hooks/useAuth';
 
 export const MobileFooter = () => {
@@ -22,6 +23,7 @@ export const MobileFooter = () => {
     if (location.pathname.startsWith('/dashboard')) return '/dashboard';
     if (location.pathname.startsWith('/projects')) return '/projects';
     if (location.pathname.startsWith('/expenses')) return '/expenses';
+    if (location.pathname.startsWith('/balances')) return '/balances';
     if (location.pathname.startsWith('/payments')) return '/payments';
     if (location.pathname.startsWith('/reports')) return '/reports';
     return '/dashboard';
@@ -74,14 +76,19 @@ export const MobileFooter = () => {
           icon={<DashboardIcon />}
         />
         <BottomNavigationAction
-          label="Projects"
-          value="/projects"
-          icon={<FolderIcon />}
-        />
-        <BottomNavigationAction
           label="Expenses"
           value="/expenses"
           icon={<ReceiptIcon />}
+        />
+        <BottomNavigationAction
+          label="Balances"
+          value="/balances"
+          icon={<AccountBalanceWalletIcon />}
+        />
+        <BottomNavigationAction
+          label="Projects"
+          value="/projects"
+          icon={<FolderIcon />}
         />
         {(user.role === 'Treasurer' || user.role === 'Admin') && (
           <BottomNavigationAction

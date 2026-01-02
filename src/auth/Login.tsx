@@ -50,8 +50,9 @@ export const Login = () => {
         // Redirect based on role
         navigate('/dashboard');
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password');
+    } catch (_err) {
+      const e = _err as unknown as { response?: { data?: { message?: string } } };
+      setError(e?.response?.data?.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }

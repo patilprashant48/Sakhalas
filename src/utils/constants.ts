@@ -48,6 +48,14 @@ export const REMINDER_FREQUENCIES = [
   'Monthly',
 ] as const;
 
+export const PAYMENT_FREQUENCIES = [
+  'One-time',
+  'Weekly',
+  'Monthly',
+  'Quarterly',
+  'Annually',
+] as const;
+
 export const DATE_FORMAT = 'MMM dd, yyyy';
 export const DATETIME_FORMAT = 'MMM dd, yyyy HH:mm';
 

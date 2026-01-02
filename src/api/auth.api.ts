@@ -3,14 +3,24 @@ import type { LoginRequest, LoginResponse, TwoFactorRequest, TwoFactorResponse, 
 
 export const authApi = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', data);
-    
-    // Store token in localStorage
-    if (response.data.data?.token) {
-      localStorage.setItem('accessToken', response.data.data.token);
+    const response = await apiClient.post('/auth/login', data);
+
+    // Backend returns: { success: boolean, data: { user, token, requiresTwoFactor? } }
+    const payload = response.data?.data || {};
+
+    // Store token in localStorage if present
+    if (payload.token) {
+      localStorage.setItem('accessToken', payload.token);
     }
-    
-    return response.data;
+
+    // Normalize to frontend LoginResponse shape
+    const normalized: LoginResponse = {
+      accessToken: payload.token,
+      requiresTwoFactor: !!payload.requiresTwoFactor,
+      user: payload.user,
+    };
+
+    return normalized;
   },
 
   verifyTwoFactor: async (data: TwoFactorRequest): Promise<TwoFactorResponse> => {

@@ -21,6 +21,8 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import GroupIcon from '@mui/icons-material/Group';
 import { usePermissions } from '../../hooks/usePermissions';
 import { DRAWER_WIDTH, DRAWER_WIDTH_COLLAPSED } from '../../utils/constants';
 import { motion } from 'framer-motion';
@@ -62,6 +64,18 @@ export const Sidebar = ({ mobileOpen, onClose, desktopOpen }: SidebarProps) => {
       icon: <ReceiptIcon />,
       path: '/expenses',
       show: permissions.hasPermission('view_expenses'),
+    },
+    {
+      text: 'Balances',
+      icon: <AccountBalanceWalletIcon />,
+      path: '/balances',
+      show: true,
+    },
+    {
+      text: 'Groups',
+      icon: <GroupIcon />,
+      path: '/groups',
+      show: true,
     },
     {
       text: 'Approvals',

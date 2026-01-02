@@ -28,6 +28,9 @@ import { projectApi } from '../../api/project.api';
 import type { Expense, ExpenseFormData } from '../../types/expense.types';
 import { ExpenseForm } from '../../components/forms/ExpenseForm';
 import { usePermissions } from '../../hooks/usePermissions';
+import { splitApi } from '../../api/split.api';
+import type { SplitType, Participant } from '../../types/split.types';
+import { enqueueSnackbar } from 'notistack';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { EXPENSE_CATEGORIES, EXPENSE_STATUSES } from '../../utils/constants';
 
@@ -57,14 +60,20 @@ export const ExpenseList = () => {
       ]);
       setExpenses(expensesData);
       setProjects(projectsData.map((p) => ({ id: p.id, name: p.name })));
-    } catch (err) {
+    } catch {
       setError('Failed to load expenses');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleFormSubmit = async (data: ExpenseFormData, file?: File) => {
+  const handleFormSubmit = async (
+    data: ExpenseFormData, 
+    billFiles: File[], 
+    quotationFiles: File[],
+    splitConfig?: { paidBy: string; splitType: SplitType; participants: Participant[]; groupId?: string }
+  ) => {
+    console.log('handleFormSubmit called with:', { data, splitConfig });
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
@@ -72,15 +81,43 @@ export const ExpenseList = () => {
           formData.append(key, value.toString());
         }
       });
-      if (file) {
-        formData.append('billFile', file);
+      // backend expects bills under 'attachments' and quotations under 'quotations'
+      if (billFiles && billFiles.length > 0) {
+        billFiles.forEach((file) => formData.append('attachments', file));
       }
+      if (quotationFiles && quotationFiles.length > 0) {
+        quotationFiles.forEach((file) => formData.append('quotations', file));
+      }
+      if (data.paymentFrequency) formData.append('paymentFrequency', data.paymentFrequency);
 
-      await expenseApi.create(formData);
+      const createdExpense = await expenseApi.create(formData);
+      console.log('Expense created:', createdExpense);
+      console.log('Checking split creation:', { splitConfig, hasId: !!createdExpense.id });
+      
+      // Create split if configuration is provided
+      if (splitConfig && createdExpense.id) {
+        console.log('Creating split with config:', splitConfig);
+        try {
+          await splitApi.create({
+            expenseId: createdExpense.id,
+            paidBy: splitConfig.paidBy,
+            totalAmount: data.amount,
+            splitType: splitConfig.splitType,
+            participants: splitConfig.participants,
+            groupId: splitConfig.groupId,
+          });
+          enqueueSnackbar('Expense and split created successfully!', { variant: 'success' });
+        } catch (splitError) {
+          console.error('Failed to create split', splitError);
+          enqueueSnackbar('Expense created but split failed. You can add it later.', { variant: 'warning' });
+        }
+      }
+      
       setFormOpen(false);
       fetchData();
     } catch (err) {
       console.error('Failed to create expense', err);
+      enqueueSnackbar('Failed to create expense', { variant: 'error' });
     }
   };
 
@@ -134,6 +171,7 @@ export const ExpenseList = () => {
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
+              name="projectId"
               label="Project"
               select
               value={filters.projectId}
@@ -150,6 +188,7 @@ export const ExpenseList = () => {
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
+              name="status"
               label="Status"
               select
               value={filters.status}
@@ -166,6 +205,7 @@ export const ExpenseList = () => {
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
+              name="category"
               label="Category"
               select
               value={filters.category}
@@ -238,12 +278,14 @@ export const ExpenseList = () => {
         </Table>
       </TableContainer>
 
-      <ExpenseForm
-        open={formOpen}
-        onClose={() => setFormOpen(false)}
-        onSubmit={handleFormSubmit}
-        projects={projects}
-      />
+      {formOpen && (
+        <ExpenseForm
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          onSubmit={handleFormSubmit}
+          projects={projects}
+        />
+      )}
     </Container>
   );
 };

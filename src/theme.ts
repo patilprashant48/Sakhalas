@@ -142,7 +142,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
     '0px 24px 48px rgba(0,0,0,0.18)',
     '0px 32px 64px rgba(0,0,0,0.2)',
     ...Array(15).fill('none'),
-  ] as any,
+  ] as string[],
   components: {
     MuiButton: {
       styleOverrides: {

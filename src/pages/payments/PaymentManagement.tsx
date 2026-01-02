@@ -57,7 +57,7 @@ export const PaymentManagement = () => {
       );
       setExpenses(payableExpenses);
       setProjects(projectsData.map((p) => ({ id: p.id, name: p.name })));
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load expenses');
     } finally {
       setLoading(false);
@@ -83,8 +83,8 @@ export const PaymentManagement = () => {
       setPaymentFormOpen(false);
       setSelectedExpense(null);
       fetchData();
-    } catch (err) {
-      console.error('Failed to add payment', err);
+    } catch (_err) {
+      console.error('Failed to add payment', _err);
     }
   };
 
@@ -119,6 +119,7 @@ export const PaymentManagement = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
+              name="projectId"
               label="Project"
               select
               value={filters.projectId}
@@ -135,6 +136,7 @@ export const PaymentManagement = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
+              name="status"
               label="Status"
               select
               value={filters.status}

@@ -34,6 +34,21 @@ router.post(
   authController.login
 );
 
+// @route   POST /api/auth/logout
+// @desc    Logout user (client-side token removal)
+// @access  Public
+router.post('/logout', authController.logout);
+
+// @route   POST /api/auth/refresh
+// @desc    Refresh JWT token
+// @access  Public (requires Authorization header)
+router.post('/refresh', authController.refreshToken);
+
+// @route   POST /api/auth/verify-2fa
+// @desc    Verify two-factor OTP and return token
+// @access  Public (OTP verification placeholder)
+router.post('/verify-2fa', authController.verifyTwoFactor);
+
 // @route   GET /api/auth/me
 // @desc    Get current user
 // @access  Private

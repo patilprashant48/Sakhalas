@@ -1,4 +1,5 @@
 import { useForm, Controller } from 'react-hook-form';
+import { useRef, useCallback } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -58,16 +59,30 @@ export const PaymentForm = ({
     onClose();
   };
 
-  const onFormSubmit = (data: PaymentFormData) => {
-    const fileInput = document.getElementById('payment-proof-upload') as HTMLInputElement;
-    const file = fileInput?.files?.[0];
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const onFormSubmit = useCallback((data: PaymentFormData) => {
+    const file = fileInputRef.current?.files?.[0];
     onSubmit(data, file);
-  };
+  }, [onSubmit]);
+
+  const submitHandler = useCallback(
+    (e: React.BaseSyntheticEvent) => {
+      return handleSubmit(onFormSubmit)(e);
+    },
+    [handleSubmit, onFormSubmit]
+  );
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog 
+      open={open} 
+      onClose={handleClose} 
+      maxWidth="sm" 
+      fullWidth
+      container={() => document.body}
+    >
       <DialogTitle>Add Payment</DialogTitle>
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+      <form onSubmit={submitHandler}>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>
@@ -136,15 +151,18 @@ export const PaymentForm = ({
             </Grid>
 
             <Grid item xs={12}>
-              <Button variant="outlined" component="label" fullWidth>
-                Upload Payment Proof (Optional)
-                <input
-                  id="payment-proof-upload"
-                  type="file"
-                  hidden
-                  accept="image/*,.pdf"
-                />
-              </Button>
+              <input
+                id="payment-proof-upload"
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,.pdf"
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="payment-proof-upload" style={{ display: 'block' }}>
+                <Button variant="outlined" component="span" fullWidth>
+                  Upload Payment Proof (Optional)
+                </Button>
+              </label>
             </Grid>
           </Grid>
         </DialogContent>

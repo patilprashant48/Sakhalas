@@ -4,7 +4,18 @@ import { authenticate } from '../middleware/auth';
 
 const router = Router();
 
-// All routes require authentication
+// @route   GET /api/dashboard/today-payments
+// @desc    Get today's payments
+// @access  Public
+router.get('/today-payments', dashboardController.getTodayPayments);
+
+// Public endpoints for lists
+router.get('/expenses-by-project', dashboardController.getExpensesByProject);
+router.get('/expenses-by-category', dashboardController.getExpensesByCategory);
+router.get('/overdue-payments', dashboardController.getOverduePayments);
+router.get('/upcoming-payments', dashboardController.getUpcomingPayments);
+
+// Protected routes require authentication
 router.use(authenticate);
 
 // @route   GET /api/dashboard/company
@@ -16,10 +27,5 @@ router.get('/company', dashboardController.getCompanyDashboard);
 // @desc    Get project dashboard data
 // @access  Private
 router.get('/project/:projectId', dashboardController.getProjectDashboard);
-
-// @route   GET /api/dashboard/today-payments
-// @desc    Get today's payments
-// @access  Public
-router.get('/today-payments', dashboardController.getTodayPayments);
 
 export default router;

@@ -56,8 +56,8 @@ export const Reports = () => {
       window.URL.revokeObjectURL(url);
       
       enqueueSnackbar(`Report exported successfully as ${type.toUpperCase()}`, { variant: 'success' });
-    } catch (err) {
-      console.error('Export error:', err);
+    } catch (_err) {
+      console.error('Export error:', _err);
       setError('Failed to export report. Please try again.');
       enqueueSnackbar('Failed to export report', { variant: 'error' });
     } finally {
@@ -121,6 +121,7 @@ export const Reports = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
+              name="reportType"
               label="Report Type"
               select
               value={filters.reportType}
@@ -136,6 +137,7 @@ export const Reports = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
+              name="projectId"
               label="Project (Optional)"
               select
               value={filters.projectId}

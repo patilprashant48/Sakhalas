@@ -1,0 +1,6 @@
+{
+  "name": "Admin User",
+  "email": "admin@sakhalas.com",
+  "password": "admin123",
+  "role": "Admin"
+}
