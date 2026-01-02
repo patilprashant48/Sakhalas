@@ -26,7 +26,8 @@ export interface TwoFactorRequest {
 }
 
 export interface TwoFactorResponse {
-  accessToken: string;
+  token?: string;
+  accessToken?: string;
   user: User;
 }
 

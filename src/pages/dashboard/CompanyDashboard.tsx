@@ -10,7 +10,6 @@ import {
   Chip,
   Stack,
   alpha,
-  Paper,
 } from '@mui/material';
 import {
   PieChart,
@@ -44,25 +43,11 @@ import type {
 } from '../../types/dashboard.types';
 import { formatCurrency, formatPercentage, formatDate } from '../../utils/formatters';
 import { DashboardSkeleton } from '../../components/common/LoadingSkeleton';
-  import EventIcon from '@mui/icons-material/Event';
-  import PendingActionsIcon from '@mui/icons-material/PendingActions';
-  import { motion } from 'framer-motion';
-  import { useSnackbar } from 'notistack';
-  import { dashboardApi } from '../../api/dashboard.api';
-  import type {
-    CompanyKPIs,
-    ExpensesByProject,
-    ExpensesByCategory,
-    OverduePayment,
-    UpcomingPayment,
-  } from '../../types/dashboard.types';
-  import { formatCurrency, formatPercentage, formatDate } from '../../utils/formatters';
-  import { DashboardSkeleton } from '../../components/common/LoadingSkeleton';
 
-  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
-  const MotionCard = motion.create(Card);
-  const MotionBox = motion.create(Box);
+const MotionCard = motion.create(Card);
+const MotionBox = motion.create(Box);
 
   // Custom tooltip for better data visualization
   type TooltipPayloadItem = { name?: string; value?: number };
