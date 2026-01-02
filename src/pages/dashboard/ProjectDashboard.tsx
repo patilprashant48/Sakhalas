@@ -58,7 +58,7 @@ export const ProjectDashboard = () => {
     if (!projectId) return;
 
     try {
-      const dashboardData = await dashboardApi.getProjectDashboard(projectId);
+      const dashboardData = await dashboardApi.getProjectData(projectId);
       setData(dashboardData);
     } catch {
       setError('Failed to load project dashboard');

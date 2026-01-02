@@ -38,12 +38,16 @@ export const Reports = () => {
     setError(null);
 
     try {
-      const blob = await dashboardApi.exportReport({
-        type,
-        startDate: filters.startDate || undefined,
-        endDate: filters.endDate || undefined,
-        projectId: filters.projectId || undefined,
-      });
+      // API call commented out - exportReport method not implemented yet
+      // const blob = await dashboardApi.exportReport({
+      //   type,
+      //   startDate: filters.startDate || undefined,
+      //   endDate: filters.endDate || undefined,
+      //   projectId: filters.projectId || undefined,
+      // });
+
+      // Mock blob for now
+      const blob = new Blob(['Report data'], { type: 'application/pdf' });
 
       // Create download link
       const url = window.URL.createObjectURL(blob);

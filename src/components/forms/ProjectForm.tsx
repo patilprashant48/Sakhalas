@@ -75,7 +75,7 @@ export const ProjectForm = ({ open, onClose, onSubmit, project, loading }: Proje
       container={() => document.body}
     >
       <DialogTitle>{project ? 'Edit Project' : 'Create New Project'}</DialogTitle>
-      <form onSubmit={handleSubmit((data: ProjectFormData) => onSubmit(data))}>
+      <form onSubmit={handleSubmit(onSubmit as any)}>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12}>

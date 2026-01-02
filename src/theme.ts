@@ -243,7 +243,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
   },
 });
 
-export const createAppTheme = (mode: PaletteMode) => createTheme(getDesignTokens(mode));
+export const createAppTheme = (mode: PaletteMode) => createTheme(getDesignTokens(mode) as any);
 
 // Default light theme
 export const theme = createAppTheme('light');

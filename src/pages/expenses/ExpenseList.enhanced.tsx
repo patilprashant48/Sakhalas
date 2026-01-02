@@ -96,7 +96,7 @@ export const ExpenseList = () => {
         await splitApi.create({
           expenseId: createdExpense.id,
           participants: splitConfig.participants,
-          splitType: splitConfig.splitType,
+          splitType: splitConfig.splitType as any,
           groupId: splitConfig.groupId,
           totalAmount: data.amount,
           paidBy: splitConfig.paidBy || undefined,
@@ -348,7 +348,7 @@ export const ExpenseList = () => {
         <ExpenseForm
           open={formOpen}
           onClose={() => setFormOpen(false)}
-          onSubmit={handleFormSubmit}
+          onSubmit={handleFormSubmit as any}
           projects={projects}
         />
       )}

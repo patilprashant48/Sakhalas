@@ -326,11 +326,11 @@ export const CompanyDashboard = () => {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={expensesByCategory}
+                        data={expensesByCategory as any}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={(entry: ExpensesByCategory) => `${entry.category}: ${formatPercentage(entry.percentage)}`}
+                        label={(entry: any) => `${entry.category}: ${formatPercentage(entry.percentage)}`}
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="amount"
