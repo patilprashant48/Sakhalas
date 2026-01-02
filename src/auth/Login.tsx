@@ -115,6 +115,8 @@ export const Login = () => {
             <TextField
               margin="normal"
               fullWidth
+              id="email"
+              name="email"
               label="Email Address"
               autoComplete="email"
               autoFocus
@@ -126,6 +128,8 @@ export const Login = () => {
             <TextField
               margin="normal"
               fullWidth
+              id="password"
+              name="password"
               label="Password"
               type="password"
               autoComplete="current-password"

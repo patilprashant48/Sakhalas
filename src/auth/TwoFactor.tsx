@@ -89,6 +89,8 @@ export const TwoFactor = () => {
             <TextField
               margin="normal"
               fullWidth
+              id="otp"
+              name="otp"
               label="OTP Code"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -97,6 +99,7 @@ export const TwoFactor = () => {
                 pattern: '[0-9]*',
                 inputMode: 'numeric',
               }}
+              autoComplete="one-time-code"
               autoFocus
             />
 
