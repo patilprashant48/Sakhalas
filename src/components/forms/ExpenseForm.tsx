@@ -24,10 +24,8 @@ import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { PAYMENT_FREQUENCIES } from '../../utils/constants';
 import type { ExpenseFormData } from '../../types/expense.types';
 import { EXPENSE_CATEGORIES, REMINDER_FREQUENCIES, PAYMENT_METHODS } from '../../utils/constants';
-import { splitApi } from '../../api/split.api';
 import { groupApi } from '../../api/group.api';
 import type { SplitType, Participant } from '../../types/split.types';
-import { useAuth } from '../../hooks/useAuth';
 import { enqueueSnackbar } from 'notistack';
 
 const expenseSchema = z.object({

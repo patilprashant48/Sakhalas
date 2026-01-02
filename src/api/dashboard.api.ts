@@ -14,18 +14,20 @@ export const dashboardApi = {
     const response = await apiClient.get<{ success: boolean; data: unknown }>('/dashboard/company');
     const respObj = response.data.data as Record<string, unknown> | undefined;
     const summary = (respObj && (respObj.summary as Record<string, unknown>)) || {};
+    const totalBudget = (summary.totalBudget as number) || 0;
+    const totalSpent = (summary.totalSpent as number) || 0;
     return {
-      totalProjects: summary.totalProjects || 0,
-      activeProjects: summary.activeProjects || 0,
-      totalBudget: summary.totalBudget || 0,
-      totalSpent: summary.totalSpent || 0,
-      budgetUtilization: summary.totalBudget > 0 ? (summary.totalSpent / summary.totalBudget) * 100 : 0,
-      pendingApprovals: summary.pendingApprovals || 0,
-      overduePayments: summary.totalOverdueAmount ? Math.ceil(summary.totalOverdueAmount) : 0,
-      totalApprovedUnpaid: summary.totalApprovedUnpaid || 0,
-      totalOverdueAmount: summary.totalOverdueAmount || 0,
-      upcomingPaymentsCount: summary.upcomingPaymentsCount || 0,
-      upcomingPaymentsAmount: summary.upcomingPaymentsAmount || 0,
+      totalProjects: (summary.totalProjects as number) || 0,
+      activeProjects: (summary.activeProjects as number) || 0,
+      totalBudget,
+      totalSpent,
+      budgetUtilization: totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0,
+      pendingApprovals: (summary.pendingApprovals as number) || 0,
+      overduePayments: summary.totalOverdueAmount ? Math.ceil(summary.totalOverdueAmount as number) : 0,
+      totalApprovedUnpaid: (summary.totalApprovedUnpaid as number) || 0,
+      totalOverdueAmount: (summary.totalOverdueAmount as number) || 0,
+      upcomingPaymentsCount: (summary.upcomingPaymentsCount as number) || 0,
+      upcomingPaymentsAmount: (summary.upcomingPaymentsAmount as number) || 0,
     } as CompanyKPIs;
   },
 

@@ -26,8 +26,8 @@ export const authApi = {
   verifyTwoFactor: async (data: TwoFactorRequest): Promise<TwoFactorResponse> => {
     const response = await apiClient.post<TwoFactorResponse>('/auth/verify-2fa', data);
     
-    if (response.data.data?.token) {
-      localStorage.setItem('accessToken', response.data.data.token);
+    if (response.data.token) {
+      localStorage.setItem('accessToken', response.data.token);
     }
     
     return response.data;

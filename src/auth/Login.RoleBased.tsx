@@ -222,11 +222,9 @@ export const Login = () => {
           </>
         </Paper>
 
-        {showRoles && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
-            This is a demo application. All roles use password: <strong>password123</strong>
-          </Typography>
-        )}
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+          This is a demo application. All roles use password: <strong>password123</strong>
+        </Typography>
       </Box>
     </Container>
   );

@@ -1,5 +1,5 @@
 import apiClient from './axios';
-import type { Expense, ApprovalAction, ApprovalHistoryItem, PaymentFormData } from '../types/expense.types';
+import type { Expense, ApprovalAction, ApprovalHistoryItem } from '../types/expense.types';
 
 export const expenseApi = {
   getAll: async (params?: { 
