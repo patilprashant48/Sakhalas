@@ -134,7 +134,7 @@ export const ExpenseForm = ({ open, onClose, onSubmit, loading, projects }: Expe
     if (enableSplit && groups.length === 0) {
       groupApi.getAll()
         .then(fetchedGroups => {
-          setGroups(fetchedGroups.map(g => ({ id: g.id || g._id, name: g.name })));
+          setGroups(fetchedGroups.map(g => ({ id: g.id, name: g.name })));
         })
         .catch(err => {
           console.error('Failed to fetch groups', err);
