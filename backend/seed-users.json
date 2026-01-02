@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Admin User",
+    "email": "admin@sakhalas.com",
+    "password": "admin123",
+    "role": "Admin",
+    "department": "Administration",
+    "phone": "+1234567890"
+  },
+  {
+    "name": "Project Manager",
+    "email": "manager@sakhalas.com",
+    "password": "manager123",
+    "role": "Project Manager",
+    "department": "Project Management",
+    "phone": "+1234567891"
+  },
+  {
+    "name": "John Employee",
+    "email": "employee@sakhalas.com",
+    "password": "employee123",
+    "role": "Employee",
+    "department": "Engineering",
+    "phone": "+1234567892"
+  },
+  {
+    "name": "Finance Treasurer",
+    "email": "treasurer@sakhalas.com",
+    "password": "treasurer123",
+    "role": "Treasurer",
+    "department": "Finance",
+    "phone": "+1234567893"
+  },
+  {
+    "name": "Audit Auditor",
+    "email": "auditor@sakhalas.com",
+    "password": "auditor123",
+    "role": "Auditor",
+    "department": "Audit & Compliance",
+    "phone": "+1234567894"
+  }
+]
