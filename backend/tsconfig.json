@@ -17,8 +17,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": false,
-    "noFallthroughCasesInSwitch": true,
-    "types": ["node", "express"]
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
