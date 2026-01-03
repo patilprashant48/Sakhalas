@@ -151,13 +151,13 @@ export const Sidebar = ({ mobileOpen, onClose, desktopOpen }: SidebarProps) => {
                       color: location.pathname === item.path 
                         ? 'primary.main' 
                         : 'text.secondary',
-                      minWidth: isExpanded ? 44 : 'auto',
+                      minWidth: isExpanded || isMobile ? 44 : 'auto',
                       justifyContent: 'center',
                     }}
                   >
                     {item.icon}
                   </ListItemIcon>
-                  {isExpanded && (
+                  {(isExpanded || isMobile) && (
                     <ListItemText 
                       primary={item.text}
                       primaryTypographyProps={{
@@ -173,7 +173,7 @@ export const Sidebar = ({ mobileOpen, onClose, desktopOpen }: SidebarProps) => {
       </List>
 
       {/* Footer Info */}
-      {isExpanded && (
+      {(isExpanded || isMobile) && (
         <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
           <Typography variant="caption" color="text.secondary" display="block">
             Sakhalas
