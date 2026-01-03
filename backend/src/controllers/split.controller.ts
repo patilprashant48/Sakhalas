@@ -16,6 +16,9 @@ export const createSplit = async (
   try {
     const { expenseId, paidBy, totalAmount, splitType, participants, groupId } = req.body;
 
+    // Sanitize groupId - convert empty string to undefined
+    const sanitizedGroupId = groupId && groupId.trim() !== '' ? groupId : undefined;
+
     // Convert paidBy name to user ID if it's not already an ID, or keep as guest name
     let paidById = paidBy;
     if (paidBy && !mongoose.Types.ObjectId.isValid(paidBy)) {
@@ -69,7 +72,7 @@ export const createSplit = async (
       totalAmount,
       splitType,
       participants: participantsWithAmounts,
-      groupId,
+      groupId: sanitizedGroupId,
     });
 
     const populatedSplit = await split.populate([
@@ -267,6 +270,9 @@ export const createSettlement = async (
     const { toUser, amount, method, transactionRef, notes, groupId } = req.body;
     const fromUser = req.user!.id;
 
+    // Sanitize groupId - convert empty string to undefined
+    const sanitizedGroupId = groupId && groupId.trim() !== '' ? groupId : undefined;
+
     const settlement = await Settlement.create({
       fromUser,
       toUser,
@@ -274,7 +280,7 @@ export const createSettlement = async (
       method,
       transactionRef,
       notes,
-      groupId,
+      groupId: sanitizedGroupId,
     });
 
     const populated = await settlement.populate([
