@@ -3,6 +3,10 @@ import type { LoginRequest, LoginResponse, TwoFactorRequest, TwoFactorResponse, 
 
 export const authApi = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
+    // Clear any existing tokens before login attempt
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('user');
+    
     const response = await apiClient.post('/auth/login', data);
 
     // Backend returns: { success: boolean, data: { user, token, requiresTwoFactor? } }
