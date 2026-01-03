@@ -201,7 +201,7 @@ export const Login = () => {
                 src={sakhalasLogo} 
                 alt="Sakhalas Logo" 
                 style={{ 
-                  height: '80px',
+                  height: '120px',
                   width: 'auto',
                   filter: 'brightness(0) invert(1)' // Make logo white
                 }} 
