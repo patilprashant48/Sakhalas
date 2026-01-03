@@ -11,6 +11,7 @@ import { DashboardSkeleton } from './components/common/LoadingSkeleton';
 
 // Auth
 import { Login } from './auth/Login.enhanced';
+import { Register } from './auth/Register';
 import { TwoFactor } from './auth/TwoFactor';
 import { AuthGuard } from './auth/AuthGuard';
 import { RoleGuard } from './auth/RoleGuard';
@@ -113,6 +114,7 @@ function App() {
                   {/* Public Routes */}
                   <Route path="/" element={<HomePublic />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
                   <Route path="/two-factor" element={<TwoFactor />} />
 
             {/* Protected Routes */}

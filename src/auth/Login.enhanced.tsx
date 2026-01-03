@@ -312,6 +312,22 @@ export const Login = () => {
                 >
                   {loading ? 'Signing In...' : 'Sign In'}
                 </Button>
+
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => navigate('/register')}
+                  sx={{
+                    py: 1.2,
+                    fontWeight: 500,
+                    borderWidth: 2,
+                    '&:hover': {
+                      borderWidth: 2,
+                    },
+                  }}
+                >
+                  Create New Account
+                </Button>
               </Stack>
             </form>
 
