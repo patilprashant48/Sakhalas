@@ -13,6 +13,7 @@ import {
   IconButton,
   InputAdornment,
 } from '@mui/material';
+import sakhalasLogo from '../assets/sakhalas-logo.png';
 import { Visibility, VisibilityOff, PersonAdd } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import apiClient from '../api/axios';
@@ -102,17 +103,21 @@ export const Register = () => {
           >
             <Box
               sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                bgcolor: 'rgba(255, 255, 255, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 mb: 2,
               }}
             >
-              <PersonAdd sx={{ fontSize: 40 }} />
+              <img 
+                src={sakhalasLogo} 
+                alt="Sakhalas Logo" 
+                style={{ 
+                  height: '80px',
+                  width: 'auto',
+                  filter: 'brightness(0) invert(1)' // Make logo white
+                }} 
+              />
             </Box>
 
             <Typography component="h1" variant="h4" gutterBottom fontWeight="bold">

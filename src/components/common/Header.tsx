@@ -7,6 +7,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import LogoutIcon from '@mui/icons-material/Logout';
+import sakhalasLogo from '../../assets/sakhalas-logo.png';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { getInitials } from '../../utils/formatters';
@@ -106,18 +107,30 @@ export const Header = ({ onMenuClick, onDesktopToggle, desktopOpen }: HeaderProp
           </IconButton>
         </Tooltip>
 
-        <Typography 
-          variant={isMobile ? 'h6' : 'h6'} 
-          noWrap 
-          component="div" 
-          sx={{ 
-            flexGrow: 1, 
-            fontWeight: 600,
-            fontSize: { xs: '1.1rem', sm: '1.25rem' }
-          }}
-        >
-          {isMobile ? '📊 SKH' : '📊 Sakhalas'}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexGrow: 1 }}>
+          <img 
+            src={sakhalasLogo} 
+            alt="Sakhalas Logo" 
+            style={{ 
+              height: isMobile ? '32px' : '40px',
+              width: 'auto',
+              objectFit: 'contain'
+            }} 
+          />
+          {!isMobile && (
+            <Typography 
+              variant="h6" 
+              noWrap 
+              component="div" 
+              sx={{ 
+                fontWeight: 600,
+                fontSize: '1.25rem'
+              }}
+            >
+              Finance Management
+            </Typography>
+          )}
+        </Box>
 
         {user && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>

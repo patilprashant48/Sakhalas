@@ -14,6 +14,7 @@ import {
   Paper,
   alpha,
 } from '@mui/material';
+import sakhalasLogo from '../assets/sakhalas-logo.png';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -189,21 +190,22 @@ export const Login = () => {
               animate={{ scale: 1 }}
               transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
               sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                bgcolor: 'rgba(255,255,255,0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 mx: 'auto',
                 mb: 2,
-                backdropFilter: 'blur(10px)',
               }}
             >
-              <Typography variant="h2" fontWeight={700}>
-                📊
-              </Typography>
+              <img 
+                src={sakhalasLogo} 
+                alt="Sakhalas Logo" 
+                style={{ 
+                  height: '80px',
+                  width: 'auto',
+                  filter: 'brightness(0) invert(1)' // Make logo white
+                }} 
+              />
             </MotionBox>
             <Typography variant="h4" fontWeight={700} gutterBottom>
               Sakhalas
