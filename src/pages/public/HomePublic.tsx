@@ -30,6 +30,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import sakhalasLogo from '../../assets/sakhalas-logo.jpeg';
 import { dashboardApi } from '../../api/dashboard.api';
 import type { TodayPayment } from '../../types/dashboard.types';
 import { formatCurrency } from '../../utils/formatters';
@@ -142,33 +143,29 @@ export const HomePublic = () => {
             sx={{
               display: 'inline-block',
               mb: 3,
-              p: 1.5,
+              p: 2,
               borderRadius: 3,
-              background: (theme) => alpha(theme.palette.primary.main, 0.1),
+              background: (theme) => alpha(theme.palette.primary.main, 0.05),
               border: 1,
-              borderColor: (theme) => alpha(theme.palette.primary.main, 0.2),
+              borderColor: (theme) => alpha(theme.palette.primary.main, 0.1),
             }}
           >
-            <Typography 
-              variant="h1" 
-              sx={{ 
-                fontSize: { xs: '2.5rem', md: '3.5rem' },
-                fontWeight: 800,
-                background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 50%, #8b5cf6 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                mb: 0,
-              }}
-            >
-              📊 Sakhalas
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 1 }}>
+              <img 
+                src={sakhalasLogo} 
+                alt="Sakhalas Logo" 
+                style={{ 
+                  height: '60px',
+                  width: 'auto',
+                  objectFit: 'contain'
+                }} 
+              />
+            </Box>
             <Typography 
               variant="h5" 
               sx={{ 
                 fontWeight: 400,
                 color: 'text.secondary',
-                mb: 3,
               }}
             >
               Finance Management
