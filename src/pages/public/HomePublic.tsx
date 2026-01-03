@@ -155,7 +155,7 @@ export const HomePublic = () => {
                 src={sakhalasLogo} 
                 alt="Sakhalas Logo" 
                 style={{ 
-                  height: '100px',
+                  height: '150px',
                   width: 'auto',
                   objectFit: 'contain'
                 }} 

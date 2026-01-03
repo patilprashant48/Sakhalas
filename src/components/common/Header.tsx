@@ -112,7 +112,7 @@ export const Header = ({ onMenuClick, onDesktopToggle, desktopOpen }: HeaderProp
             src={sakhalasLogo} 
             alt="Sakhalas Logo" 
             style={{ 
-              height: isMobile ? '48px' : '60px',
+              height: isMobile ? '56px' : '70px',
               width: 'auto',
               objectFit: 'contain'
             }} 
