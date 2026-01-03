@@ -152,11 +152,12 @@ export const HomePublic = () => {
             sx={{
               display: 'inline-block',
               mb: 3,
-              p: 2,
+              p: { xs: 1.5, md: 2 },
               borderRadius: 3,
               background: (theme) => alpha(theme.palette.primary.main, 0.05),
               border: 1,
               borderColor: (theme) => alpha(theme.palette.primary.main, 0.1),
+              maxWidth: '100%',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 1 }}>
@@ -164,8 +165,10 @@ export const HomePublic = () => {
                 src={sakhalasLogo} 
                 alt="Sakhalas Logo" 
                 style={{ 
-                  height: '150px',
-                  width: 'auto',
+                  height: 'auto',
+                  width: '100%',
+                  maxWidth: '200px',
+                  maxHeight: '120px',
                   objectFit: 'contain'
                 }} 
               />
@@ -175,6 +178,7 @@ export const HomePublic = () => {
               sx={{ 
                 fontWeight: 400,
                 color: 'text.secondary',
+                fontSize: { xs: '1rem', md: '1.25rem' },
               }}
             >
               Finance Management
@@ -187,7 +191,8 @@ export const HomePublic = () => {
               mb: 2,
               fontWeight: 600,
               color: 'text.primary',
-              fontSize: { xs: '1.5rem', md: '2rem' },
+              fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+              px: { xs: 2, md: 0 },
             }}
           >
             Smart Financial Management for Modern Teams
@@ -201,6 +206,8 @@ export const HomePublic = () => {
               maxWidth: 700, 
               mx: 'auto',
               lineHeight: 1.6,
+              fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' },
+              px: { xs: 2, md: 0 },
             }}
           >
             Streamline project expenses, automate payment workflows, and gain real-time insights into your financial operations
@@ -212,11 +219,11 @@ export const HomePublic = () => {
             onClick={() => navigate('/login')}
             endIcon={<ArrowForward />}
             sx={{ 
-              px: 4,
-              py: 1.5,
+              px: { xs: 3, md: 4 },
+              py: { xs: 1.25, md: 1.5 },
               borderRadius: 3,
               textTransform: 'none',
-              fontSize: '1.1rem',
+              fontSize: { xs: '1rem', md: '1.1rem' },
               fontWeight: 600,
               background: 'linear-gradient(135deg, #2563eb 0%, #06b6d4 100%)',
               boxShadow: (theme) => `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
@@ -232,7 +239,7 @@ export const HomePublic = () => {
         </MotionBox>
 
         {/* Stats Section */}
-        <Grid container spacing={3} sx={{ mb: 8 }}>
+        <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 8 }}>
           {[
             { label: 'Active Users', value: '10K+', color: '#2563eb' },
             { label: 'Projects Managed', value: '50K+', color: '#06b6d4' },
@@ -246,7 +253,7 @@ export const HomePublic = () => {
                 transition={{ delay: 0.1 * index, duration: 0.5 }}
                 sx={{
                   textAlign: 'center',
-                  p: 3,
+                  p: { xs: 2, md: 3 },
                   background: (_theme) => alpha(stat.color, 0.05),
                   border: 2,
                   borderColor: (_theme) => alpha(stat.color, 0.2),
@@ -267,11 +274,19 @@ export const HomePublic = () => {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     mb: 1,
+                    fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
                   }}
                 >
                   {stat.value}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                  sx={{ 
+                    fontWeight: 500,
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
+                  }}
+                >
                   {stat.label}
                 </Typography>
               </MotionCard>
