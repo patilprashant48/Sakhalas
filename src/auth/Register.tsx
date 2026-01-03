@@ -54,14 +54,20 @@ export const Register = () => {
 
     try {
       const { confirmPassword, ...registerData } = data;
-      await apiClient.post('/auth/register', registerData);
+      const response = await apiClient.post('/auth/register', registerData);
       
+      console.log('Registration successful:', response.data);
       setSuccess(true);
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', err.response?.data);
+      const errorMessage = err.response?.data?.message 
+        || err.response?.data?.errors?.[0]?.msg
+        || err.message 
+        || 'Registration failed. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
