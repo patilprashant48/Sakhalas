@@ -30,7 +30,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import sakhalasLogo from '../../assets/sakhalas-logo.jpeg';
+import sakhalasLogo from '../../assets/sakhalas-logo.png';
 import { dashboardApi } from '../../api/dashboard.api';
 import type { TodayPayment } from '../../types/dashboard.types';
 import { formatCurrency } from '../../utils/formatters';
