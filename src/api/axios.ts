@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+// Determine API base URL - use production URL if on Render, otherwise localhost
+const getApiBaseUrl = () => {
+  // If we're on the production domain, use production backend
+  if (window.location.hostname.includes('onrender.com')) {
+    return 'https://sakhalas-2.onrender.com/api';
+  }
+  // Otherwise use environment variable or localhost
+  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
