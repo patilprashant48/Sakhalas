@@ -42,6 +42,25 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Root route - API information
+app.get('/', (_req, res) => {
+  res.json({
+    name: 'Sakhalas Finance Management API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      auth: '/api/auth',
+      projects: '/api/projects',
+      expenses: '/api/expenses',
+      dashboard: '/api/dashboard',
+      splits: '/api/splits',
+      groups: '/api/groups',
+      health: '/health'
+    },
+    documentation: 'See README.md for API documentation'
+  });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
