@@ -51,12 +51,21 @@ export const HomePublic = () => {
 
   const fetchTodayPayments = async () => {
     try {
+      // Check if user is authenticated before fetching
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        // Not authenticated - skip fetching payments on public page
+        setLoading(false);
+        return;
+      }
+      
       const data = await dashboardApi.getTodayPayments();
       setPayments(data);
       setError(null);
     } catch (_err) {
       console.error('Failed to fetch payments:', _err);
-      setError('Failed to load today\'s payments');
+      // Don't show error on public page - just skip the payments section
+      setError(null);
     } finally {
       setLoading(false);
     }
