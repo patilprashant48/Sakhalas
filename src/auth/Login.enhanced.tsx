@@ -14,7 +14,7 @@ import {
   Paper,
   alpha,
 } from '@mui/material';
-import sakhalasLogo from '../assets/sakhalas-logo.png';
+import sakhalasLogo from '../assets/sakhalas-logo.jpeg';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

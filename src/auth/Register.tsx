@@ -13,7 +13,7 @@ import {
   IconButton,
   InputAdornment,
 } from '@mui/material';
-import sakhalasLogo from '../assets/sakhalas-logo.png';
+import sakhalasLogo from '../assets/sakhalas-logo.jpeg';
 import { Visibility, VisibilityOff, PersonAdd } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import apiClient from '../api/axios';
