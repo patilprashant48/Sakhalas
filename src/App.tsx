@@ -20,6 +20,7 @@ import { RoleGuard } from './auth/RoleGuard';
 import { Header } from './components/common/Header';
 import { Sidebar } from './components/common/Sidebar';
 import { MobileFooter } from './components/common/MobileFooter';
+import { PWAInstallPrompt } from './components/common/PWAInstallPrompt';
 
 // Pages - Lazy loaded for better performance
 const HomePublic = lazy(() => import('./pages/public/HomePublic').then(m => ({ default: m.HomePublic })));
@@ -109,6 +110,7 @@ function App() {
         >
           <AuthProvider>
             <Router>
+              <PWAInstallPrompt />
               <Suspense fallback={<DashboardSkeleton />}>
                 <Routes>
                   {/* Public Routes */}
